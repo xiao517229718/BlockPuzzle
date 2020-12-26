@@ -51,12 +51,6 @@ return Application.persistentDataPath;
         /// <returns></returns>
         public static T GetClassInfo<T>(string calssName) where T : class
         {
-            foreach (var value in allSaveInfo)
-            {
-                Debug.LogError($"value:{value}");
-
-            }
-
             if (allSaveInfo.ContainsKey(calssName))
             {
 
@@ -86,6 +80,7 @@ return Application.persistentDataPath;
         /// </summary>
         public static void StartGetSaveInfo()
         {
+            allSaveInfo = new Dictionary<string, string>();
             if (!Directory.Exists(GetGameInfoPath()))
             {
                 Directory.CreateDirectory(GetGameInfoPath());
@@ -108,10 +103,12 @@ return Application.persistentDataPath;
                                 allSaveInfo.Add(elem.ToString(), ite[elem.ToString()].ToString());
                             }
                         }
+#if UNITY_EDITOR   
                         foreach (var value in allSaveInfo)
                         {
-                            Debug.LogError($"Key:{value.Key},Value:{value.Value}");
+                            Debug.LogWarning($"编辑器打印之前保存数据 Key:{value.Key},Value:{value.Value}");
                         }
+#endif
                     }
                 }
             }

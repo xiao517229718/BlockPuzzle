@@ -28,10 +28,14 @@ namespace BlockPuzzle
         /// <summary>
         /// 地图索引行  从左上角开始计算 
         /// </summary>
-        public int maoIndex = 0;
+        public int mapIndex = 0;
         /// <summary>
         /// 地图索引列 从左上角开始计算 
         /// </summary>
-        public int maoIndey = 0;
+        public int mapIndey = 0;
+        /// <summary>
+        /// 是否被填充 0 没有填充 1 被填充
+        /// </summary>
+        public int isFill = 0;
     }
 }
