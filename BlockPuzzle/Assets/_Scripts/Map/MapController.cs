@@ -31,26 +31,32 @@ namespace BlockPuzzle
     {
         [Tooltip("左上角起始位置")]
         public Transform leftUpStartPos = null;
+        private Transform DetectionParent = null;
         [Tooltip("上下左右间隔")]
-        public float m_Spece = 0.24f;
+        private float m_Spece = 0.2f;
         private int m_xSize = 8;
         private int m_ySize = 8;
         private Vector3 m_InitPos = Vector3.zero;
         public IntMapInfo intMapInfo;
         [HideInInspector]
         public int shapIndex = 0;
+        private Transform shaps = null;
         void Start()
         {
-            leftUpStartPos = GameObject.Find("CubeOrigin").transform;
+            shaps = GameObject.Find("Shaps").transform;
+            leftUpStartPos = GameObject.Find("ShapDetection").transform;
+            DetectionParent = GameObject.Find("Detections").transform;
             Debug.Log(leftUpStartPos != null);
             if (leftUpStartPos != null)
             {
                 m_xSize = MapHelper.HorizontalCount;
                 m_ySize = MapHelper.virticalCount;
+                m_Spece = MapHelper.interval;
                 m_InitPos = leftUpStartPos.localPosition;
                 InitPos();
                 MapHelper.InitMap();
             }
+            CreatShap.Creat(shapIndex, shaps);
 
         }
         void Update()
@@ -101,6 +107,11 @@ namespace BlockPuzzle
                 for (int j = 0; j < m_ySize; j++)
                 {
                     poses.Add(new Vector2(m_InitPos.x + i * m_Spece, m_InitPos.y + j * m_Spece));
+                    GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "ShapDetection"), DetectionParent) as GameObject;
+                    DetectionPos dp = go.GetComponent<DetectionPos>();
+                    dp.pos_x = j;
+                    dp.pos_y = i;
+                    go.transform.localPosition = new Vector3(m_InitPos.x - j * m_Spece, m_InitPos.y - i * m_Spece, 0.1f);
                 }
                 mapPoses.Add(poses);
             }

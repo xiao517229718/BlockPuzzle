@@ -15,7 +15,10 @@ namespace BlockPuzzle
         /// 地图竖向值
         /// </summary>
         public static readonly int virticalCount = 8;
-
+        /// <summary>
+        /// 检测体生产间隔
+        /// </summary>
+        public static readonly float interval = 0.2f;
         /// <summary>
         /// 游戏运行时 地图信息
         /// </summary>
