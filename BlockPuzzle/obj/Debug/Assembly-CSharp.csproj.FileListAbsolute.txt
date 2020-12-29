@@ -1,0 +1,2 @@
+D:\BlockPuzzle\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
+D:\BlockPuzzle\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache

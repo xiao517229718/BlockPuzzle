@@ -56,7 +56,6 @@ namespace BlockPuzzle
                 InitPos();
                 MapHelper.InitMap();
             }
-            CreatShap.Creat(shapIndex, shaps);
 
         }
         void Update()

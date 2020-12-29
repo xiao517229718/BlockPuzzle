@@ -18,7 +18,7 @@ namespace BlockPuzzle
         /// <summary>
         /// 检测体生产间隔
         /// </summary>
-        public static readonly float interval = 0.2f;
+        public static readonly float interval = 0.19f;
         /// <summary>
         /// 游戏运行时 地图信息
         /// </summary>
@@ -29,6 +29,15 @@ namespace BlockPuzzle
         /// </summary>
         public static void InitMap()
         {
+            try
+            {
+                ShapManager.currentIndex = int.Parse(GameInfoSaveManager.GetAttributeInfo("currentIndex"));
+            }
+            catch
+            {
+                ShapManager.currentIndex = 0;
+            }
+            Debug.Log("获取生成进度");
             Map map = GameInfoSaveManager.GetClassInfo<Map>("BlockPuzzleMap");
             if (map == null)
             {
@@ -95,6 +104,8 @@ namespace BlockPuzzle
             }
             Map map = new Map();
             map._mapInfo = InspectormapInfo;
+            int currentIndex = ShapManager.currentIndex;
+            GameInfoSaveManager.SaveAttributeInfo("currentIndex", LitJson.JsonMapper.ToJson(currentIndex));
             GameInfoSaveManager.SaveClassInfo<Map>("BlockPuzzleMap", map);
             GameInfoSaveManager.EndSetSaveInfo();
         }
