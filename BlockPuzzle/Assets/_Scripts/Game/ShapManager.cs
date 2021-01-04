@@ -55,7 +55,6 @@ namespace BlockPuzzle
             {
                 returnValue = Random.Range(0, 31);
             }
-            Debug.LogError(returnValue);
             return returnValue;
         }
     }

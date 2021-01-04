@@ -60,14 +60,7 @@ namespace BlockPuzzle
         }
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                Debug.LogError($"开始计算时间{Time.realtimeSinceStartup}");
-                bool canPut = MapHelper.HasSuitablePos(ShapList.GetShapList(shapIndex));
-                Debug.LogError($"结束计算时间{Time.realtimeSinceStartup}");
-                if (canPut) Debug.LogWarning("能放置");
-                else Debug.LogWarning("不能放置");
-            }
+
         }
         private void OnDestroy()
         {
@@ -93,6 +86,109 @@ namespace BlockPuzzle
         {
             MapHelper.SaveMap();
         }
+
+        /// <summary>
+        /// 检测是否有消除的
+        /// </summary>
+        public static void Check()
+        {
+
+            int lineCount = MapHelper._mapInfo[0].Count;
+            for (int i = 0; i < MapHelper._mapInfo.Count; i++)
+            {
+                int count = 0;
+                for (int j = 0; j < MapHelper._mapInfo[i].Count; j++)
+                {
+                    if (MapHelper._mapInfo[i][j].isFill == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        count++;
+                        if (count == MapHelper._mapInfo[i].Count)
+                        {
+                            ClearnLine(i);
+                            List<GameObject> lineOnjs = new List<GameObject>();
+                            for (int h = 0; h < lineCount; h++)
+                            {
+                                lineOnjs.Add(MapHelper.objcts[i, h]);
+                                MapHelper.objcts[i, h] = null;
+                            }
+                            for (int h = 0; h < lineOnjs.Count; h++)
+                            {
+                                DownElem(lineOnjs[h]);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 设置掉下
+        /// </summary>
+        /// <param name="go"></param>
+        public static void DownElem(GameObject go)
+        {
+            go.AddComponent<Rigidbody>();
+        }
+        /// <summary>
+        /// 填充某个位置
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>true  填充成功  false 填充失败</returns>
+        public static bool Fill(int x, int y, GameObject go)
+        {
+            bool fill = false;
+            if (MapHelper._mapInfo[x][y].isFill == 0)
+            {
+                MapHelper._mapInfo[x][y].isFill = 1;
+                MapHelper.objcts[x, y] = go;
+                fill = true;
+
+            }
+            else
+            {
+                Debug.Log("填充失败 已经被填充过了");
+            }
+            return fill;
+        }
+        /// <summary>
+        /// 清除某一行
+        /// </summary>
+        /// <param name="x"></param>
+        public static void ClearnLine(int x)
+        {
+            for (int i = 0; i < MapHelper._mapInfo[x].Count; i++)
+            {
+                MapHelper._mapInfo[x][i].isFill = 0;
+            }
+
+        }
+        /// <summary>
+        /// 某个位置是否被填充
+        /// </summary>
+        /// <returns></returns>
+        public bool isFilled(int x, int y)
+        {
+            bool isfill = false;
+
+            return isfill;
+        }
+        /// <summary>
+        /// 某个形状在地图中是否还有位置可放置
+        /// </summary>
+        /// <param name="shap"></param>
+        /// <returns></returns>
+        public bool havePos(int shap)
+        {
+            bool havepos = false;
+
+            return havepos;
+        }
         #region 内部函数
         /// <summary>
         /// 初始化单项检测的位置 
@@ -105,12 +201,12 @@ namespace BlockPuzzle
                 List<Vector2> poses = new List<Vector2>();
                 for (int j = 0; j < m_ySize; j++)
                 {
-                    poses.Add(new Vector2(m_InitPos.x + i * m_Spece, m_InitPos.y + j * m_Spece));
+                    poses.Add(new Vector2(m_InitPos.x + i * 0.2f, m_InitPos.y + j * 0.2f));
                     GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "ShapDetection"), DetectionParent) as GameObject;
                     DetectionPos dp = go.GetComponent<DetectionPos>();
                     dp.pos_x = j;
                     dp.pos_y = i;
-                    go.transform.localPosition = new Vector3(m_InitPos.x - j * m_Spece, m_InitPos.y - i * m_Spece, 0.1f);
+                    go.transform.localPosition = new Vector3(m_InitPos.x - j * 0.2f, m_InitPos.y - i * 0.2f, 0.1f);
                 }
                 mapPoses.Add(poses);
             }

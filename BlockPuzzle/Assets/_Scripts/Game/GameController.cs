@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace BlockPuzzle
 {
     public class GameController : MonoBehaviour
     {
+        public static bool pause = false;
         /// <summary>
         /// 形状生成点
         /// </summary>
@@ -25,14 +27,39 @@ namespace BlockPuzzle
             {
                 creatPos.Add(creatTrans[i].position);
             }
-            ShapManager.currentIndex = 3;
-            CreatShap.Creat(shaps, creatPos, out currentNotUseShap);
+            StartGame();
         }
 
         // Update is called once per frame
         void Update()
         {
 
+        }
+
+        /// <summary>
+        /// 判断是否移动 
+        /// </summary>
+        public static bool JudgeMove(GameObject detection, GameObject elem)
+        {
+
+            DetectionPos dp = detection.GetComponent<DetectionPos>();
+            int posx = dp.pos_x;
+            int posy = dp.pos_y;
+            bool move = MapController.Fill(posx, posy, elem);
+            return move;
+        }
+        /// <summary>
+        /// 移动完成后 检测是否需要消除
+        /// </summary>
+        /// <returns></returns>
+        public static void Check()
+        {
+            MapController.Check();
+        }
+        public void StartGame()
+        {
+            //ShapManager.currentIndex = 3;
+            CreatShap.Creat(shaps, creatPos, out currentNotUseShap);
         }
     }
 }

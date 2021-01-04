@@ -25,6 +25,10 @@ namespace BlockPuzzle
         public static List<List<MapSingleInfo>> _mapInfo = new List<List<MapSingleInfo>>();
         public static List<List<Vector2>> _worldPos = new List<List<Vector2>>();
         /// <summary>
+        /// 存放游戏物体 用于消除
+        /// </summary>
+        public static GameObject[,] objcts = new GameObject[8, 8];
+        /// <summary>
         /// 初始化地图
         /// </summary>
         public static void InitMap()
