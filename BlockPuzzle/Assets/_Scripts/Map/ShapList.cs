@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace BlockPuzzle
 {
+    #region 根据索引 获取形状数组
     public class ShapList
     {
+
         public static List<List<int>> GetShapList(int shapId)
         {
             List<List<int>> returnValue = new List<List<int>>();
@@ -122,4 +124,5 @@ namespace BlockPuzzle
             return returnValue;
         }
     }
+    #endregion
 }

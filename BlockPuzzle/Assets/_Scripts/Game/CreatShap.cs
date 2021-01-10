@@ -46,6 +46,7 @@ namespace BlockPuzzle
                 allElem[i].SetParent(singleParent.transform);
             }
             singleParent.transform.SetParent(shapParent);
+
             return singleParent;
         }
 
@@ -54,7 +55,7 @@ namespace BlockPuzzle
         /// </summary>
         /// <param name="creatPos">生成的位置</param>
         /// <param name="shap">每个形状对应的数组</param>
-        public static void Creat(Transform shapParent, List<Vector3> creatPos, out List<List<List<int>>> shap)
+        public static void Creat(Transform shapParent, List<Vector3> creatPos, out List<int> shap)
         {
 
 
@@ -68,8 +69,10 @@ namespace BlockPuzzle
                 singleShap = ShapList.GetShapList(currentShaps[i]);
                 allCurrentCreatShaps.Add(singleShap);
                 GameObject singleParent = new GameObject();
-                singleParent.name = "singleParent";
+                singleParent.name = "singleParent" + "_" + currentShaps[i].ToString();
                 Rigidbody rb = singleParent.AddComponent<Rigidbody>();
+                Shap shapIndex = singleParent.AddComponent<Shap>();
+                shapIndex.shapIndex = currentShaps[i];
                 rb.useGravity = false;
 
                 List<Transform> allElem = new List<Transform>();
@@ -102,8 +105,12 @@ namespace BlockPuzzle
                 // collider.center = new Vector3(0, (Pos_y * MapHelper.interval) / 2, 0);
                 collider.size = new Vector3(Pos_x * MapHelper.interval, Pos_y * MapHelper.interval, MapHelper.interval);
                 rb.useGravity = true;
+                //   singleParent.AddComponent(typeof(Shap));
+
+                //  UnityEngineInternal.APIUpdaterRuntimeServices.AddComponent(singleParent, "添加力", "Force");
+                //shapIndex.shapIndex = singleShap;
             }
-            shap = allCurrentCreatShaps;
+            shap = currentShaps;
         }
     }
 }

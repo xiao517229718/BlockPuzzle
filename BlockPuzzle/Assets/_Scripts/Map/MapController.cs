@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 namespace BlockPuzzle
 {
     [System.Serializable]
@@ -41,6 +42,8 @@ namespace BlockPuzzle
         [HideInInspector]
         public int shapIndex = 0;
         private Transform shaps = null;
+        private static Dictionary<string, GameObject> current = new Dictionary<string, GameObject>();
+        private
         void Start()
         {
             shaps = GameObject.Find("Shaps").transform;
@@ -55,6 +58,25 @@ namespace BlockPuzzle
                 m_InitPos = leftUpStartPos.localPosition;
                 InitPos();
                 MapHelper.InitMap();
+                CreatDefault();
+            }
+
+        }
+        void CreatDefault()
+        {
+            for (int i = 0; i < MapHelper._mapInfo.Count; i++)
+            {
+                for (int j = 0; j < MapHelper._mapInfo[i].Count; j++)
+                {
+                    if (MapHelper._mapInfo[i][j].isFill == 1)
+                    {
+                        GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "SingekBlock")) as GameObject;
+                        go.transform.SetParent(shaps);
+                        go.transform.localPosition = new Vector3(float.Parse(MapHelper._mapInfo[i][j].PosX), float.Parse(MapHelper._mapInfo[i][j].Posy), 0);
+                        go.name = i.ToString() + j.ToString();
+                        MapHelper.objcts[i, j] = go;
+                    }
+                }
             }
 
         }
@@ -94,6 +116,7 @@ namespace BlockPuzzle
         {
 
             int lineCount = MapHelper._mapInfo[0].Count;
+
             for (int i = 0; i < MapHelper._mapInfo.Count; i++)
             {
                 int count = 0;
@@ -108,16 +131,46 @@ namespace BlockPuzzle
                         count++;
                         if (count == MapHelper._mapInfo[i].Count)
                         {
-                            ClearnLine(i);
-                            List<GameObject> lineOnjs = new List<GameObject>();
+                            ClearnLine(i, true);
+                            List<GameObject> lineObjs = new List<GameObject>();
                             for (int h = 0; h < lineCount; h++)
                             {
-                                lineOnjs.Add(MapHelper.objcts[i, h]);
+                                lineObjs.Add(MapHelper.objcts[i, h]);
                                 MapHelper.objcts[i, h] = null;
                             }
-                            for (int h = 0; h < lineOnjs.Count; h++)
+                            for (int h = 0; h < lineObjs.Count; h++)
                             {
-                                DownElem(lineOnjs[h]);
+                                DownElem(lineObjs[h]);
+                            }
+
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < MapHelper._mapInfo[0].Count; i++)
+            {
+                int verCount = 0;
+                for (int j = 0; j < MapHelper._mapInfo.Count; j++)
+                {
+                    if (MapHelper._mapInfo[j][i].isFill == 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        verCount++;
+                        if (verCount == MapHelper._mapInfo[i].Count)
+                        {
+                            ClearnLine(i, false);
+                            List<GameObject> lineObjs = new List<GameObject>();
+                            for (int h = 0; h < lineCount; h++)
+                            {
+                                lineObjs.Add(MapHelper.objcts[h, i]);
+                                MapHelper.objcts[h, i] = null;
+                            }
+                            for (int h = 0; h < lineObjs.Count; h++)
+                            {
+                                DownElem(lineObjs[h]);
                             }
 
                         }
@@ -134,6 +187,30 @@ namespace BlockPuzzle
         {
             go.AddComponent<Rigidbody>();
         }
+
+        /// <summary>
+        /// 当前拖拽物体是否应该填充
+        /// </summary>
+        /// <param name="fill"></param>
+        public static void FillOrNot(bool fill)
+        {
+            if (fill)
+            {
+                foreach (var item in current)
+                {
+                    string[] elem = item.Key.Split('_');
+                    int x = int.Parse(elem[0]);
+                    int y = int.Parse(elem[1]);
+                    MapHelper._mapInfo[x][y].isFill = 1;
+                    MapHelper.objcts[x, y] = item.Value;
+                }
+            }
+            else
+            {
+            }
+            current.Clear();
+        }
+
         /// <summary>
         /// 填充某个位置
         /// </summary>
@@ -145,14 +222,13 @@ namespace BlockPuzzle
             bool fill = false;
             if (MapHelper._mapInfo[x][y].isFill == 0)
             {
-                MapHelper._mapInfo[x][y].isFill = 1;
-                MapHelper.objcts[x, y] = go;
+                string key = x.ToString() + '_' + y.ToString();
+                if (!current.ContainsKey(key))
+                    current.Add(key, go);
                 fill = true;
-
             }
             else
             {
-                Debug.Log("填充失败 已经被填充过了");
             }
             return fill;
         }
@@ -160,12 +236,26 @@ namespace BlockPuzzle
         /// 清除某一行
         /// </summary>
         /// <param name="x"></param>
-        public static void ClearnLine(int x)
+        public static void ClearnLine(int x, bool lie)
         {
-            for (int i = 0; i < MapHelper._mapInfo[x].Count; i++)
+            Debug.LogError("满行？？");
+            if (lie)
             {
-                MapHelper._mapInfo[x][i].isFill = 0;
+
+                for (int i = 0; i < MapHelper._mapInfo[x].Count; i++)
+                {
+                    MapHelper._mapInfo[x][i].isFill = 0;
+                }
             }
+            else
+            {
+
+                for (int i = 0; i < MapHelper._mapInfo[x].Count; i++)
+                {
+                    MapHelper._mapInfo[i][x].isFill = 0;
+                }
+            }
+
 
         }
         /// <summary>
@@ -206,6 +296,8 @@ namespace BlockPuzzle
                     DetectionPos dp = go.GetComponent<DetectionPos>();
                     dp.pos_x = j;
                     dp.pos_y = i;
+                    //Text tex = go.transform.GetComponentInChildren<Text>();
+                    //tex.text = ToString(i) + ToString(j);
                     go.transform.localPosition = new Vector3(m_InitPos.x - j * 0.2f, m_InitPos.y - i * 0.2f, 0.1f);
                 }
                 mapPoses.Add(poses);
@@ -233,6 +325,7 @@ namespace BlockPuzzle
                 }
             }
             InspectorSaveMapInfo();
+            Debug.Log("设置成功");
         }
 #endif
         #endregion

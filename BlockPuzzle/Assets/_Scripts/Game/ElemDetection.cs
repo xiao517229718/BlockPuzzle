@@ -9,6 +9,7 @@ namespace BlockPuzzle
     /// </summary>
     public class ElemDetection : MonoBehaviour
     {
+        private GameObject target;
         private Vector3 outPoint = Vector3.zero;
         private void Awake()
         {
@@ -17,30 +18,38 @@ namespace BlockPuzzle
         {
 
         }
-        public void RayCast()
+        public bool RayCast()
         {
-            try
-            {
-                RaycastHit hitInfo = new RaycastHit();
-                Physics.Raycast(transform.position, transform.forward, out hitInfo, 5);
-                {
-                    outPoint = hitInfo.point;
-                    if (hitInfo.collider.gameObject.tag == "Detection")//获取到对象了 
-                    {
 
-                        GameObject target = hitInfo.collider.gameObject;
-                        if (GameController.JudgeMove(hitInfo.collider.gameObject, gameObject))
-                        { //如果没有填充
-                            transform.SetParent(transform.parent.parent);
-                            transform.DOMove(target.transform.position, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
-{
-    GameController.Check();
-});
-                        };
-                    }
+            RaycastHit hitInfo = new RaycastHit();
+            Physics.Raycast(transform.position, transform.forward, out hitInfo, 5);
+            {
+                outPoint = hitInfo.point;
+                if (hitInfo.collider == null)
+                {
+                    return false;
                 }
+                if (hitInfo.collider.gameObject.tag == "Detection")//获取到对象了 
+                {
+
+                    target = hitInfo.collider.gameObject;
+                    if (GameController.JudgeMove(hitInfo.collider.gameObject, gameObject))
+                    { //如果没有填充
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+    ;
+                }
+                else
+                {
+                    return false;
+                }
+
             }
-            catch { }
+
 
         }
         void OnDrawGizmos()
@@ -51,9 +60,26 @@ namespace BlockPuzzle
         /// <summary>
         /// 鼠标抬起的时候调用
         /// </summary>
-        public void MouseUp()
+        public bool MouseUp()
         {
-            RayCast();
+            return RayCast();
+        }
+        /// <summary>
+        /// 当前可以移动
+        /// </summary>
+        public void Move()
+        {
+            int shpIndex = transform.parent.GetComponent<Shap>().shapIndex;
+            transform.SetParent(transform.parent.parent);
+            transform.DOMove(target.transform.position, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+            {
+                GameController.Check(shpIndex);
+                transform.localEulerAngles = new Vector3(0, 180, 0);
+            });
+
+            //transform.DOMove(target.transform.position, 0);
+            //GameController.Check(shpIndex);
+            //transform.localEulerAngles = new Vector3(0, 180, 0);
         }
     }
 }

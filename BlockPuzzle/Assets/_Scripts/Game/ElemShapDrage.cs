@@ -40,17 +40,38 @@ namespace BlockPuzzle
                 if (target != null)
                 {
                     Transform[] blocks = target.transform.GetAllChildTrans();
+                    bool move = true;
                     for (int i = 0; i < blocks.Length; i++)
                     {
-                        try
+                        ElemDetection elemDt = blocks[i].GetComponent<ElemDetection>();
+                        move = elemDt.MouseUp();
+                        //try
+                        //{
+                        //    ElemDetection elemDt = blocks[i].GetComponent<ElemDetection>();
+                        //    elemDt.MouseUp();
+                        //}
+                        //catch
+                        //{
+                        //    Debug.LogWarning("dont have scripts");
+                        //}
+                        if (move == false)
+                        {
+                            break;
+                        }
+                    }
+                    if (move)
+                    {
+                        for (int i = 0; i < blocks.Length; i++)
                         {
                             ElemDetection elemDt = blocks[i].GetComponent<ElemDetection>();
-                            elemDt.MouseUp();
+                            elemDt.Move();
                         }
-                        catch
-                        {
-                            Debug.LogWarning("dont have scripts");
-                        }
+                        MapController.FillOrNot(true);
+                        Destroy(target);
+                    }
+                    else
+                    {
+                        MapController.FillOrNot(false);
                     }
                 }
             }
@@ -68,8 +89,13 @@ namespace BlockPuzzle
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray.origin, ray.direction * 10, out hit))
             {
-                if (hit.collider.transform.name == "singleParent")
+                string[] elemName = hit.collider.transform.name.Split('_');
+                if (elemName[0] == "singleParent")
+                {
                     target = hit.collider.gameObject;
+                    GameController.currentDrage = int.Parse(elemName[1]);
+                }
+
             }
             return target;
         }

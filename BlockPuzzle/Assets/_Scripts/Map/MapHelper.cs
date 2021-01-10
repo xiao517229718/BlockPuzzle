@@ -93,14 +93,13 @@ namespace BlockPuzzle
                 Debug.LogWarning("地图宽度不正确");
                 return;
             }
-            if (_mapInfo.Count == 0) GetMap();
+            if (_mapInfo.Count == 0) GetMap();//获取位置信息 x y 坐标
             List<List<MapSingleInfo>> InspectormapInfo = new List<List<MapSingleInfo>>();
             for (int i = 0; i < mapInfo.Count; i++)
             {
                 List<MapSingleInfo> temp = new List<MapSingleInfo>();
-                for (int j = 0; j < mapInfo[0].Count; j++)
+                for (int j = 0; j < mapInfo[i].Count; j++)
                 {
-                    Debug.Log(mapInfo[i][j]);
                     MapSingleInfo elem = SetElemInfo(_mapInfo[i][j].PosX, _mapInfo[i][j].Posy.ToString(), ColorType.ColorWood, i, j, mapInfo[i][j]);
                     temp.Add(elem);
                 }
@@ -108,8 +107,8 @@ namespace BlockPuzzle
             }
             Map map = new Map();
             map._mapInfo = InspectormapInfo;
-            int currentIndex = ShapManager.currentIndex;
-            GameInfoSaveManager.SaveAttributeInfo("currentIndex", LitJson.JsonMapper.ToJson(currentIndex));
+            string currentIndex = ShapManager.currentIndex.ToString();
+            GameInfoSaveManager.SaveAttributeInfo("currentIndex", currentIndex);
             GameInfoSaveManager.SaveClassInfo<Map>("BlockPuzzleMap", map);
             GameInfoSaveManager.EndSetSaveInfo();
         }
@@ -134,7 +133,6 @@ namespace BlockPuzzle
             int verticalCount = elemMap.Count;
             //传入形状的列数
             int horizontalCount = elemMap[0].Count;
-            Debug.Log($"宽度 ：{horizontalCount} 高度 :{verticalCount}");
             for (int i = 0; i < _mapInfo.Count; i++)
             {
                 for (int j = 0; j < _mapInfo[i].Count; j++)
@@ -147,6 +145,10 @@ namespace BlockPuzzle
                             List<int> horielem = new List<int>();
                             for (int k = 0; k < horizontalCount; k++)
                             {
+                                if ((i + l) > 7 || (j + k) > 7)
+                                {
+                                    break;
+                                }
                                 horielem.Add(_mapInfo[i + l][j + k].isFill);
                             }
                             temp.Add(horielem);
@@ -231,7 +233,7 @@ namespace BlockPuzzle
                 List<MapSingleInfo> horizontalMap = new List<MapSingleInfo>();
                 for (int j = 0; j < HorizontalCount; j++)
                 {
-                    MapSingleInfo elem = SetElemInfo(_worldPos[i][j].x.ToString(), _worldPos[i][j].y.ToString(), ColorType.ColorWood, i, j, 1);
+                    MapSingleInfo elem = SetElemInfo(_worldPos[i][j].x.ToString(), _worldPos[i][j].y.ToString(), ColorType.ColorWood, i, j, 0);
                     horizontalMap.Add(elem);
                 }
                 _mapInfo.Add(horizontalMap);

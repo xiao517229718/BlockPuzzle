@@ -40,7 +40,7 @@ return Application.persistentDataPath;
         /// </summary>
         public static void SaveAttributeInfo(string AttributeName, string jsonData)
         {
-            allSaveInfo.Add(AttributeName, jsonData);
+            allSaveInfo[AttributeName] = jsonData;
         }
 
         /// <summary>
