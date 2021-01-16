@@ -30,7 +30,7 @@ namespace BlockPuzzle
                 {
                     if (shap[i][j] == 1)
                     {
-                        GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "SingekBlock")) as GameObject;
+                        GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "BlockCube")) as GameObject;
                         go.transform.SetParent(singleParent.transform);
                         go.transform.localPosition = new Vector3(j * MapHelper.interval, -i * MapHelper.interval, -0.5f);
                         go.transform.SetParent(shapPosTemp);
@@ -55,11 +55,8 @@ namespace BlockPuzzle
         /// </summary>
         /// <param name="creatPos">生成的位置</param>
         /// <param name="shap">每个形状对应的数组</param>
-        public static void Creat(Transform shapParent, List<Vector3> creatPos, out List<int> shap)
+        public static void Create(Transform shapParent, List<Vector3> creatPos,List<Transform> targetPos, out List<int> shap)
         {
-
-
-
             List<List<List<int>>> allCurrentCreatShaps = new List<List<List<int>>>();
             List<int> currentShaps = ShapManager.GetQuestionIndex();
             Transform shapPosTemp = GameObject.Find("shapPosTemp").transform;
@@ -70,10 +67,12 @@ namespace BlockPuzzle
                 allCurrentCreatShaps.Add(singleShap);
                 GameObject singleParent = new GameObject();
                 singleParent.name = "singleParent" + "_" + currentShaps[i].ToString();
-                Rigidbody rb = singleParent.AddComponent<Rigidbody>();
+                //singleParent.transform.localScale = Vector3.one;
+                //Rigidbody rb = singleParent.AddComponent<Rigidbody>();
                 Shap shapIndex = singleParent.AddComponent<Shap>();
                 shapIndex.shapIndex = currentShaps[i];
-                rb.useGravity = false;
+                shapIndex.target = targetPos[i];
+               // rb.useGravity = false;
 
                 List<Transform> allElem = new List<Transform>();
                 float Pos_x = singleShap[0].Count;
@@ -85,7 +84,7 @@ namespace BlockPuzzle
                     {
                         if (singleShap[j][k] == 1)
                         {
-                            GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "SingekBlock")) as GameObject;
+                            GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "BlockCube")) as GameObject;
                             go.transform.SetParent(singleParent.transform);
                             go.transform.localPosition = new Vector3((k * MapHelper.interval) + 0.5f * MapHelper.interval, (j * MapHelper.interval) + 0.5f * MapHelper.interval, -0f);
                             go.transform.SetParent(shapPosTemp);
@@ -104,7 +103,8 @@ namespace BlockPuzzle
                 BoxCollider collider = singleParent.AddComponent<BoxCollider>();
                 // collider.center = new Vector3(0, (Pos_y * MapHelper.interval) / 2, 0);
                 collider.size = new Vector3(Pos_x * MapHelper.interval, Pos_y * MapHelper.interval, MapHelper.interval);
-                rb.useGravity = true;
+                shapIndex.isMove = true;
+                //rb.useGravity = true;
                 //   singleParent.AddComponent(typeof(Shap));
 
                 //  UnityEngineInternal.APIUpdaterRuntimeServices.AddComponent(singleParent, "添加力", "Force");

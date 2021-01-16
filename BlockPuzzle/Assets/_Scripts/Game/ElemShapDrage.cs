@@ -11,10 +11,11 @@ namespace BlockPuzzle
         private bool isMouseDrag = false;
         private Vector3 screenPosition;
         private Vector3 offset;
-        private List<List<int>> shapArry = new List<List<int>>();
+        private Vector3 targetPos;
+        //private List<List<int>> shapArry = new List<List<int>>();
         void Start()
         {
-
+           
         }
 
         // Update is called once per frame
@@ -27,6 +28,7 @@ namespace BlockPuzzle
                 target = ReturnClickedObject(out hitInfo);
                 if (target != null)
                 {
+                    targetPos = target.transform.position;
                     isMouseDrag = true;
                     screenPosition = Camera.main.WorldToScreenPoint(target.transform.position);
                     offset = target.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPosition.z));
@@ -36,6 +38,7 @@ namespace BlockPuzzle
 
             if (Input.GetMouseButtonUp(0))
             {
+
                 isMouseDrag = false;
                 if (target != null)
                 {
@@ -54,7 +57,7 @@ namespace BlockPuzzle
                         //{
                         //    Debug.LogWarning("dont have scripts");
                         //}
-                        if (move == false)
+                        if (move == false)//回到原位
                         {
                             break;
                         }
@@ -72,6 +75,7 @@ namespace BlockPuzzle
                     else
                     {
                         MapController.FillOrNot(false);
+                        target.transform.position = targetPos;
                     }
                 }
             }

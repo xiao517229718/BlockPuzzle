@@ -41,7 +41,7 @@ namespace BlockPuzzle
                     {
                         return false;
                     }
-    ;
+    
                 }
                 else
                 {
@@ -69,7 +69,9 @@ namespace BlockPuzzle
         /// </summary>
         public void Move()
         {
+
             int shpIndex = transform.parent.GetComponent<Shap>().shapIndex;
+            Debug.Log(shpIndex);
             transform.SetParent(transform.parent.parent);
             transform.DOMove(target.transform.position, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
             {

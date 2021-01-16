@@ -107,6 +107,7 @@ namespace BlockPuzzle
             }
             Map map = new Map();
             map._mapInfo = InspectormapInfo;
+            _mapInfo = InspectormapInfo;
             string currentIndex = ShapManager.currentIndex.ToString();
             GameInfoSaveManager.SaveAttributeInfo("currentIndex", currentIndex);
             GameInfoSaveManager.SaveClassInfo<Map>("BlockPuzzleMap", map);
@@ -233,6 +234,7 @@ namespace BlockPuzzle
                 List<MapSingleInfo> horizontalMap = new List<MapSingleInfo>();
                 for (int j = 0; j < HorizontalCount; j++)
                 {
+                    Debug.Log("save：："+ _worldPos[i][j].x.ToString()+_worldPos[i][j].y.ToString());
                     MapSingleInfo elem = SetElemInfo(_worldPos[i][j].x.ToString(), _worldPos[i][j].y.ToString(), ColorType.ColorWood, i, j, 0);
                     horizontalMap.Add(elem);
                 }

@@ -19,6 +19,7 @@ namespace BlockPuzzle
         /// </summary>
         private void OnDestroy()
         {
+           // MapHelper.SaveMap();
             GameInfoSaveManager.EndSetSaveInfo();
         }
       
