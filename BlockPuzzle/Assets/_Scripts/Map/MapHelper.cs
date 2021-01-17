@@ -131,6 +131,38 @@ namespace BlockPuzzle
         public static bool HasSuitablePos(List<List<int>> elemMap)
         { //tode
           //传入形状的行数
+            List<List<int>> newelem = new List<List<int>>();
+            for (int i = elemMap.Count - 1; i >= 0; i--)
+            {
+
+                List<int> newe = new List<int>();
+                for (int j = 0; j < elemMap[i].Count; j++)
+                {
+                    newe.Add(elemMap[i][j]);
+                }
+                newelem.Add(newe);
+            }
+            elemMap = newelem;
+
+            List<List<int>> objs = new List<List<int>>();
+
+            for (int i = 0; i < objcts.GetLength(0); i++)
+            {
+                List<int> ele = new List<int>();
+                for (int j = 0; j < objcts.GetLength(1); j++)
+                {
+                    if (objcts[i, j] != null)
+                    {
+                        ele.Add(1);
+
+                    }
+                    else
+                        ele.Add(0);
+                }
+                objs.Add(ele);
+            }
+
+
             int verticalCount = elemMap.Count;
             //传入形状的列数
             int horizontalCount = elemMap[0].Count;
@@ -156,22 +188,25 @@ namespace BlockPuzzle
                         }
                         if (IsSuitable(elemMap, temp)) //可以放置
                         {
+
+                            for (int h = 0; h < elemMap.Count; h++)
+                            {
+                                for (int k = 0; k < elemMap[h].Count; k++)
+                                {
+                                    //Debug.LogError(JsonMapper.ToJson(elemMap.ToArray()) + "   elemMap");
+                                    //Debug.LogError(JsonMapper.ToJson(temp.ToArray()) + "  temp");
+                                }
+                            }
                             return true;
                         }
                         else
                         {//不可放置
+
+                            //Debug.LogError($"i:{i} j:{j}");
+                            string elemS = JsonMapper.ToJson(elemMap.ToArray());
+                            string tempS = JsonMapper.ToJson(_mapInfo.ToArray());
                             continue;
                         }
-                        //#region 打印日志
-                        //for (int m = 0; m < temp.Count; m++)
-                        //{
-                        //    for (int n = 0; n < temp[m].Count; m++)
-                        //    {
-                        //        Debug.LogError($"{temp[m][n]} 获取的临时表  m:{m} n:{n}");
-                        //    }
-                        //}
-
-                        //#endregion
                     }
                 }
 
@@ -189,18 +224,18 @@ namespace BlockPuzzle
         #region 内部函数
         private static bool IsSuitable(List<List<int>> shap, List<List<int>> tem)
         {
-            bool suitable = true;
+
+            //bool suitable = true;
             if (shap.Count != tem.Count)
             {
-                Debug.LogWarning("高度不一样");
-                suitable = false;
-                return suitable;
+                return false;
             }
-            if (shap[0].Count != tem[0].Count)
+            for (int i = 0; i < shap.Count; i++)
             {
-                Debug.LogWarning("宽度不一样");
-                suitable = false;
-                return suitable;
+                if (shap[i].Count != tem[i].Count)
+                {
+                    return false;
+                }
             }
             for (int i = 0; i < shap.Count; i++)
             {
@@ -210,13 +245,12 @@ namespace BlockPuzzle
                     {
                         if (tem[i][j] == 1) //对应的位置 已经被占据
                         {
-                            suitable = false;
-                            return suitable;
+                            return false;
                         }
                     }
                 }
             }
-            return suitable;
+            return true;
         }
         /// <summary>
         /// 设置默认地图 全是空
@@ -234,7 +268,7 @@ namespace BlockPuzzle
                 List<MapSingleInfo> horizontalMap = new List<MapSingleInfo>();
                 for (int j = 0; j < HorizontalCount; j++)
                 {
-                    Debug.Log("save：："+ _worldPos[i][j].x.ToString()+_worldPos[i][j].y.ToString());
+                    Debug.Log("save：：" + _worldPos[i][j].x.ToString() + _worldPos[i][j].y.ToString());
                     MapSingleInfo elem = SetElemInfo(_worldPos[i][j].x.ToString(), _worldPos[i][j].y.ToString(), ColorType.ColorWood, i, j, 0);
                     horizontalMap.Add(elem);
                 }

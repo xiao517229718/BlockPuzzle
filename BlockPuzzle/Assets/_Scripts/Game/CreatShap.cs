@@ -55,7 +55,7 @@ namespace BlockPuzzle
         /// </summary>
         /// <param name="creatPos">生成的位置</param>
         /// <param name="shap">每个形状对应的数组</param>
-        public static void Create(Transform shapParent, List<Vector3> creatPos,List<Transform> targetPos, out List<int> shap)
+        public static void Create(Transform shapParent, List<Vector3> creatPos, out List<int> shap)
         {
             List<List<List<int>>> allCurrentCreatShaps = new List<List<List<int>>>();
             List<int> currentShaps = ShapManager.GetQuestionIndex();
@@ -71,8 +71,8 @@ namespace BlockPuzzle
                 //Rigidbody rb = singleParent.AddComponent<Rigidbody>();
                 Shap shapIndex = singleParent.AddComponent<Shap>();
                 shapIndex.shapIndex = currentShaps[i];
-                shapIndex.target = targetPos[i];
-               // rb.useGravity = false;
+                //shapIndex.target = tagetPos[i];
+                // rb.useGravity = false;
 
                 List<Transform> allElem = new List<Transform>();
                 float Pos_x = singleShap[0].Count;
@@ -103,7 +103,7 @@ namespace BlockPuzzle
                 BoxCollider collider = singleParent.AddComponent<BoxCollider>();
                 // collider.center = new Vector3(0, (Pos_y * MapHelper.interval) / 2, 0);
                 collider.size = new Vector3(Pos_x * MapHelper.interval, Pos_y * MapHelper.interval, MapHelper.interval);
-                shapIndex.isMove = true;
+                //   shapIndex.isMove = true;
                 //rb.useGravity = true;
                 //   singleParent.AddComponent(typeof(Shap));
 

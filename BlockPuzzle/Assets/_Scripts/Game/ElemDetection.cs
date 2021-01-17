@@ -41,7 +41,7 @@ namespace BlockPuzzle
                     {
                         return false;
                     }
-    
+
                 }
                 else
                 {
@@ -70,18 +70,13 @@ namespace BlockPuzzle
         public void Move()
         {
 
-            int shpIndex = transform.parent.GetComponent<Shap>().shapIndex;
-            Debug.Log(shpIndex);
+            GameController.Instance.currentDrage = transform.parent.GetComponent<Shap>().shapIndex;
+
             transform.SetParent(transform.parent.parent);
-            transform.DOMove(target.transform.position, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+            transform.DOMove(target.transform.position, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
             {
-                GameController.Check(shpIndex);
                 transform.localEulerAngles = new Vector3(0, 180, 0);
             });
-
-            //transform.DOMove(target.transform.position, 0);
-            //GameController.Check(shpIndex);
-            //transform.localEulerAngles = new Vector3(0, 180, 0);
         }
     }
 }

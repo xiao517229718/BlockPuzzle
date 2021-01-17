@@ -7,12 +7,11 @@ namespace BlockPuzzle
     public class GameController : UnitySingleton<GameController>
     {
         public static bool pause = false;
-        static int count = 0;
         /// <summary>
         /// 形状生成点
         /// </summary>
         public List<Transform> creatTrans = new List<Transform>();
-        public List<Transform> targetTrans = new List<Transform>();
+        //public List<Transform> targetTrans = new List<Transform>();
         private Transform shaps = null;
         /// <summary>
         /// 形状初始生成位置
@@ -21,11 +20,11 @@ namespace BlockPuzzle
         /// <summary>
         /// 当前还没有使用的形状 生成和放置了一个只后需要判断一下里面的形状是否还开放置
         /// </summary>
-        private static List<int> currentNotUseShap = new List<int>();
+        public List<int> currentNotUseShap = new List<int>();
         /// <summary>
         /// 当前拖拽的形状
         /// </summary>
-        public static int currentDrage = 0;
+        public int currentDrage = -1;
         public static bool creatNext = false;
 
         void Start()
@@ -44,7 +43,7 @@ namespace BlockPuzzle
         public void RePlay()
         {
             ClearScene();
-          
+
 
             MapController.Instance.InitMap();
             StartGame();
@@ -52,7 +51,8 @@ namespace BlockPuzzle
         /// <summary>
         /// 开始游戏
         /// </summary>
-        public void NewGame() {
+        public void NewGame()
+        {
             MapController.Instance.AllToOneFill(0);
             GameController.Instance.ClearScene();
             MapController.Instance.InitMap();
@@ -69,28 +69,10 @@ namespace BlockPuzzle
             }
             if (creatNext)
             {
-                StartGame();
                 creatNext = false;
+                StartGame();
             }
 
-            //if (currentNotUseShap.Count > 0)
-            //{
-            //    for (int i = 0; i < currentNotUseShap.Count; i++)
-            //    {
-            //        List<List<int>> shapArry = ShapList.GetShapList(currentNotUseShap[i]);
-            //        bool isgameOver = MapHelper.HasSuitablePos(shapArry);
-            //        if (!isgameOver)
-            //        { //还能放置
-            //          //haveSeat = isgameOver;
-            //            Debug.LogError("游戏结束");
-            //            GameUI.gameOverEvent();
-            //        }
-            //        else
-            //        {
-
-            //        }
-            //    }
-            //}
         }
         /// <summary>
         /// 判断是否移动 
@@ -114,20 +96,19 @@ namespace BlockPuzzle
         /// <returns></returns>
         public static void Check(int shapIndex)
         {
-            UseShap(shapIndex);
-            MapController.Check();
+            MapController.Check(shapIndex);
         }
         public void StartGame()
         {
             //ShapManager.currentIndex = 3;
-            CreatShap.Create(shaps, creatPos, targetTrans, out currentNotUseShap);
-            //resShapCheck();
+            CreatShap.Create(shaps, creatPos, out currentNotUseShap);
+            resShapCheck();
         }
         /// <summary>
         /// 使用了一个形状 1：移除一个形状 2  判断剩下的是能满足填充
         /// </summary>
         /// <param name="shapIndex"></param>
-        public static void UseShap(int shapIndex)
+        public void UseShap(int shapIndex)
         {
             if (currentNotUseShap.Contains(shapIndex))
             {
@@ -139,39 +120,36 @@ namespace BlockPuzzle
 
             }
         }
-        private static void resShapCheck()
+        private void resShapCheck()
         {
             if (currentNotUseShap.Count <= 0)
             {
                 creatNext = true;
                 return;
             }
-            bool haveSeat = false;
             for (int i = 0; i < currentNotUseShap.Count; i++)
             {
                 List<List<int>> shapArry = ShapList.GetShapList(currentNotUseShap[i]);
                 bool isgameOver = MapHelper.HasSuitablePos(shapArry);
                 if (isgameOver)
                 { //还能放置
-                    haveSeat = isgameOver;
-                }
-                else
-                {
-                    haveSeat = false;
+                    return;
                 }
             }
-            if (haveSeat)
-            {
-                count++;
-                Debug.LogError("能游戏" + count);
 
-            }
-            else
-            {
-                Debug.LogError("游戏结束");
-                GameUI.gameOverEvent();
+            GameUI.gameOverEvent();
+            //if (haveSeat)
+            //{
+            //    count++;
+            //    Debug.LogError("能游戏" + count);
 
-            }
+            //}
+            //else
+            //{
+            //    Debug.LogError("游戏结束");
+            //    GameUI.gameOverEvent();
+
+            //}
         }
 
         public void ClearScene()

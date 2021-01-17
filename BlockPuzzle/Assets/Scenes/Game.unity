@@ -1450,7 +1450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b35d68747aa16a4abe68af4c78c4ffe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftUpStartPos: {fileID: 0}
+  leftUpStartPos: {fileID: 1240765446}
   intMapInfo:
     lineOne: 0000000000000000000000000000000000000000000000000000000000000000
     lineTwo: 0000000000000000000000000000000000000000000000000000000000000000
@@ -1460,7 +1460,7 @@ MonoBehaviour:
     lineSix: 0000000000000000000000000000000000000000000000000000000000000000
     lineSeven: 0000000000000000000000000000000000000000000000000000000000000000
     lineEight: 0000000000000000000000000000000000000000000000000000000000000000
-  shapIndex: 30
+  shapIndex: 0
 --- !u!4 &588519815
 Transform:
   m_ObjectHideFlags: 0
@@ -1742,10 +1742,8 @@ MonoBehaviour:
   - {fileID: 1641796280}
   - {fileID: 878658894}
   - {fileID: 1509096282}
-  targetTrans:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  currentNotUseShap: 
+  currentDrage: -1
 --- !u!1 &819314415
 GameObject:
   m_ObjectHideFlags: 0

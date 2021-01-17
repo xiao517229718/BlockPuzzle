@@ -15,7 +15,7 @@ namespace BlockPuzzle
         //private List<List<int>> shapArry = new List<List<int>>();
         void Start()
         {
-           
+
         }
 
         // Update is called once per frame
@@ -62,6 +62,7 @@ namespace BlockPuzzle
                             break;
                         }
                     }
+
                     if (move)
                     {
                         for (int i = 0; i < blocks.Length; i++)
@@ -69,6 +70,8 @@ namespace BlockPuzzle
                             ElemDetection elemDt = blocks[i].GetComponent<ElemDetection>();
                             elemDt.Move();
                         }
+                        StartCoroutine(IEWaitTime());
+
                         MapController.FillOrNot(true);
                         Destroy(target);
                     }
@@ -77,6 +80,7 @@ namespace BlockPuzzle
                         MapController.FillOrNot(false);
                         target.transform.position = targetPos;
                     }
+                    target = null;
                 }
             }
             if (isMouseDrag)
@@ -97,11 +101,19 @@ namespace BlockPuzzle
                 if (elemName[0] == "singleParent")
                 {
                     target = hit.collider.gameObject;
-                    GameController.currentDrage = int.Parse(elemName[1]);
+                    GameController.Instance.currentDrage = int.Parse(elemName[1]);
                 }
 
             }
             return target;
+        }
+        IEnumerator IEWaitTime()
+        {
+            yield return new WaitForSeconds(0.3f);
+            int currentDrage = GameController.Instance.currentDrage;
+
+            if (currentDrage != -1)
+                GameController.Check(currentDrage);
         }
     }
 }

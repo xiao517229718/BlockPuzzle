@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenAnimation.cs" />
+    <Compile Include="Assets\UI\GameUI.cs" />
     <Compile Include="Assets\_Scripts\Audio\AudioManager.cs" />
     <Compile Include="Assets\_Scripts\Component\AudioComponet.cs" />
     <Compile Include="Assets\_Scripts\Component\BaseComponet.cs" />
@@ -89,6 +90,8 @@
     <Compile Include="Assets\_Scripts\Resource\ResourceLoad.cs" />
     <Compile Include="Assets\_Scripts\Resource\ResourceManager.cs" />
     <Compile Include="Assets\_Scripts\Resource\ResourcePath.cs" />
+    <Compile Include="Assets\_Scripts\TestChange.cs" />
+    <Compile Include="Assets\_Scripts\Utils\Singleton.cs" />
     <Compile Include="Assets\_Scripts\test\testcs.cs" />
     <None Include="Assets\Demigiant\DOTween\DOTween43.xml" />
     <None Include="Assets\Demigiant\DOTween\DOTween46.xml" />

@@ -35,7 +35,13 @@ namespace BlockPuzzle
             List<int> quesIndex = new List<int>();
             for (int i = 0; i < 3; i++)
             {
-                quesIndex.Add(GetSingleIndex());
+                int getValue = GetSingleIndex();
+                while (quesIndex.Contains(getValue))
+                {
+                    getValue = GetSingleIndex();
+                }
+
+                quesIndex.Add(getValue);
             }
             return quesIndex;
         }

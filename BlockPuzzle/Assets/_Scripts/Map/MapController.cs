@@ -67,25 +67,25 @@ namespace BlockPuzzle
                 // CreatDefault();
             }
         }
-        void CreatDefault()
-        {
-            for (int i = 0; i < MapHelper._mapInfo.Count; i++)
-            {
-                for (int j = 0; j < MapHelper._mapInfo[i].Count; j++)
-                {
-                    if (MapHelper._mapInfo[i][j].isFill == 1)
-                    {
-                        Debug.Log("" + float.Parse(MapHelper._mapInfo[i][j].PosX) + "" + float.Parse(MapHelper._mapInfo[i][j].Posy));
-                        GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "BlockCube")) as GameObject;
-                        go.transform.SetParent(shaps);
-                        go.transform.localPosition = new Vector3(float.Parse(MapHelper._mapInfo[i][j].PosX), float.Parse(MapHelper._mapInfo[i][j].Posy), -0.9f);
-                        go.name = i.ToString() + j.ToString();
-                        MapHelper.objcts[i, j] = go;
-                    }
-                }
-            }
+        //void CreatDefault()
+        //{
+        //    for (int i = 0; i < MapHelper._mapInfo.Count; i++)
+        //    {
+        //        for (int j = 0; j < MapHelper._mapInfo[i].Count; j++)
+        //        {
+        //            if (MapHelper._mapInfo[i][j].isFill == 1)
+        //            {
+        //                Debug.Log("" + float.Parse(MapHelper._mapInfo[i][j].PosX) + "" + float.Parse(MapHelper._mapInfo[i][j].Posy));
+        //                GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "BlockCube")) as GameObject;
+        //                go.transform.SetParent(shaps);
+        //                go.transform.localPosition = new Vector3(float.Parse(MapHelper._mapInfo[i][j].PosX), float.Parse(MapHelper._mapInfo[i][j].Posy), -0.9f);
+        //                go.name = i.ToString() + j.ToString();
+        //                MapHelper.objcts[i, j] = go;
+        //            }
+        //        }
+        //    }
 
-        }
+        //}
         void Update()
         {
 
@@ -107,23 +107,15 @@ namespace BlockPuzzle
             }
             return MapHelper._mapInfo;
         }
-        ///// <summary>
-        ///// 保存地图信息
-        ///// </summary>
-        //public void SaveMapInfo()
-        //{
-        //    MapHelper.SaveMap();
-        //}
         /// <summary>
         /// 检测是否有消除的
         /// </summary>
-        public static void Check()
+        public static void Check(int shapIndexx)
         {
 
             int lineCount = MapHelper._mapInfo[0].Count;
             List<int> suitH = new List<int>();
             List<int> suitL = new List<int>();
-
             for (int i = 0; i < MapHelper._mapInfo.Count; i++)
             {
                 int count = 0;
@@ -139,6 +131,10 @@ namespace BlockPuzzle
                         if (count == MapHelper._mapInfo[i].Count)
                         {
                             suitH.Add(i);
+                            for (int h = 0; h < MapHelper._mapInfo.Count; h++)
+                            {
+                                MapHelper._mapInfo[i][h].isFill = 0;
+                            }
 
                         }
                     }
@@ -159,6 +155,10 @@ namespace BlockPuzzle
                         if (verCount == MapHelper._mapInfo[i].Count)
                         {
                             suitL.Add(i);
+                            for (int h = 0; h < MapHelper._mapInfo.Count; h++)
+                            {
+                                MapHelper._mapInfo[h][i].isFill = 0;
+                            }
                         }
                     }
                 }
@@ -170,11 +170,11 @@ namespace BlockPuzzle
 
                 for (int h = 0; h < lineCount; h++)
                 {
-                    if (!lineObjs.Contains(MapHelper.objcts[i, h]))
+                    if (!lineObjs.Contains(MapHelper.objcts[suitH[i], h]))
                     {
                         lineObjs.Add(MapHelper.objcts[suitH[i], h]);
                     }
-                    MapHelper.objcts[i, h] = null;
+                    MapHelper.objcts[suitH[i], h] = null;
                 }
             }
             for (int i = 0; i < suitL.Count; i++)
@@ -182,11 +182,12 @@ namespace BlockPuzzle
                 ClearnLine(suitL[i], false);
                 for (int h = 0; h < lineCount; h++)
                 {
-                    if (!lineObjs.Contains(MapHelper.objcts[h, i]))
+                    if (!lineObjs.Contains(MapHelper.objcts[h, suitL[i]]))
                     {
+
                         lineObjs.Add(MapHelper.objcts[h, suitL[i]]);
                     }
-                    MapHelper.objcts[h, i] = null;
+                    MapHelper.objcts[h, suitL[i]] = null;
                 }
 
             }
@@ -194,29 +195,10 @@ namespace BlockPuzzle
             {
                 DownElem(lineObjs[h]);
             }
-
+            GameController.Instance.UseShap(shapIndexx);
         }
 
-        //}
 
-
-
-
-        //        ClearnLine(i, false);
-        //        List<GameObject> lineObjs = new List<GameObject>();
-        //            for (int h = 0; h<lineCount; h++)
-        //            {
-        //                lineObjs.Add(MapHelper.objcts[h, i]);
-        //                MapHelper.objcts[h, i] = null;
-        //            }
-        //            for (int h = 0; h<lineObjs.Count; h++)
-        //            {
-        //                DownElem(lineObjs[h]);
-        //}
-
-
-
-        //        }
 
         /// <summary>
         /// 设置掉下
@@ -224,7 +206,8 @@ namespace BlockPuzzle
         /// <param name="go"></param>
         public static void DownElem(GameObject go)
         {
-            go.AddComponent<Rigidbody>();
+            if (go != null)
+                go.AddComponent<Rigidbody>();
         }
 
         /// <summary>
@@ -277,7 +260,6 @@ namespace BlockPuzzle
         /// <param name="x"></param>
         public static void ClearnLine(int x, bool lie)
         {
-            Debug.LogError("满行？？" + lie);
             if (lie)
             {
 
@@ -333,8 +315,8 @@ namespace BlockPuzzle
                     poses.Add(new Vector2(m_InitPos.x + i * 0.2f, m_InitPos.y + j * 0.2f));
                     GameObject go = GameObject.Instantiate(ResourceManager.LoadAsset<GameObject>(ResourceType.Prefab, "ShapDetection"), DetectionParent) as GameObject;
                     DetectionPos dp = go.GetComponent<DetectionPos>();
-                    dp.pos_x = j;
-                    dp.pos_y = i;
+                    dp.pos_x = i;
+                    dp.pos_y = j;
                     //Text tex = go.transform.GetComponentInChildren<Text>();
                     //tex.text = ToString(i) + ToString(j);
                     go.transform.localPosition = new Vector3(m_InitPos.x - j * 0.2f, m_InitPos.y - i * 0.2f, 0.1f);
