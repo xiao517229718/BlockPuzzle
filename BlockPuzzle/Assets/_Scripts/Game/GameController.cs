@@ -96,7 +96,7 @@ namespace BlockPuzzle
         /// <returns></returns>
         public static void Check(int shapIndex)
         {
-            MapController.Check(shapIndex);
+            MapController.Instance.Check(shapIndex);
         }
         public void StartGame()
         {

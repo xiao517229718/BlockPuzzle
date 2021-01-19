@@ -110,7 +110,7 @@ namespace BlockPuzzle
         /// <summary>
         /// 检测是否有消除的
         /// </summary>
-        public static void Check(int shapIndexx)
+        public  void Check(int shapIndexx)
         {
 
             int lineCount = MapHelper._mapInfo[0].Count;
@@ -131,10 +131,10 @@ namespace BlockPuzzle
                         if (count == MapHelper._mapInfo[i].Count)
                         {
                             suitH.Add(i);
-                            for (int h = 0; h < MapHelper._mapInfo.Count; h++)
-                            {
-                                MapHelper._mapInfo[i][h].isFill = 0;
-                            }
+                            //for (int h = 0; h < MapHelper._mapInfo.Count; h++)
+                            //{
+                            //    MapHelper._mapInfo[i][h].isFill = 0;
+                            //}
 
                         }
                     }
@@ -155,10 +155,10 @@ namespace BlockPuzzle
                         if (verCount == MapHelper._mapInfo[i].Count)
                         {
                             suitL.Add(i);
-                            for (int h = 0; h < MapHelper._mapInfo.Count; h++)
-                            {
-                                MapHelper._mapInfo[h][i].isFill = 0;
-                            }
+                            //for (int h = 0; h < MapHelper._mapInfo.Count; h++)
+                            //{
+                            //    MapHelper._mapInfo[h][i].isFill = 0;
+                            //}
                         }
                     }
                 }
@@ -204,12 +204,26 @@ namespace BlockPuzzle
         /// 设置掉下
         /// </summary>
         /// <param name="go"></param>
-        public static void DownElem(GameObject go)
+        public  void DownElem(GameObject go)
         {
             if (go != null)
-                go.AddComponent<Rigidbody>();
+            {
+                float randomValue = Random.Range(0.2f, 0.8f);
+                Rigidbody rg = go.AddComponent<Rigidbody>();
+                rg.velocity = -go.transform.forward * randomValue;
+                //// StartCoroutine(IEWaitSecond(go));
+
+                BoxCollider box = go.AddComponent<BoxCollider>();
+                box.size = new Vector3(0.009f, 0.009f, 0.009f);
+
+            }
         }
 
+        IEnumerator IEWaitSecond(GameObject go)
+        {
+            yield return new WaitForSeconds(0.5f);
+         
+        }
         /// <summary>
         /// 当前拖拽物体是否应该填充
         /// </summary>

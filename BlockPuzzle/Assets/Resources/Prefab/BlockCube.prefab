@@ -39,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1189950384178548358}
-  - component: {fileID: -7946777417214601902}
+  - component: {fileID: -6177064227597547837}
   m_Layer: 0
   m_Name: BlockCube
   m_TagString: Untagged
@@ -74,7 +74,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-7946777417214601902
+--- !u!114 &-6177064227597547837
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

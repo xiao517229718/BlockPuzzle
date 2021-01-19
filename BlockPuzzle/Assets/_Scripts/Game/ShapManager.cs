@@ -33,6 +33,10 @@ namespace BlockPuzzle
         public static List<int> GetQuestionIndex()
         {
             List<int> quesIndex = new List<int>();
+            //quesIndex.Add(4);
+            //quesIndex.Add(4);
+            //quesIndex.Add(4);
+
             for (int i = 0; i < 3; i++)
             {
                 int getValue = GetSingleIndex();
